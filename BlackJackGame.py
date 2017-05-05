@@ -7,13 +7,13 @@
 # will need a function for finding the best move
 # possibly find a way to display info in a window and not textbox
 from random import shuffle
-import pygame
-#import loadingandnaming
-import pygame
 import imghdr
 import os
-pygame.init()
+# pygame.init()
+from loadingandnaming import *
 
+
+# this is a branch
 def deck():
     # deck joins the suits and ranks of a deck and then shuffles the deck into a random order
     deck = []
@@ -63,16 +63,15 @@ mydeck = deck()
 hand = create_hand(mydeck)
 dealer = hand[0]
 player = hand[1]
-
 turn_number = 0 # variable used to keep track of how many turns there have been
 dealer_Turn = False
 play_again = True
 ask = False
 
-while play_again == True:
-    #
-    #gameDisplay.fill(green)
-    #card_update()
+while play_again is True:
+    pygame.event.get()
+    gameDisplay.fill(green)
+    card_update(player, dealer)
     dealercount = points(dealer)
     playercount = points(player)
     if turn_number == 0:
@@ -94,16 +93,19 @@ while play_again == True:
             print('dealer busts with ' + str(dealer) + ' or ' + str(dealercount) + ' points.')
             print('Player wins with ' + str(player) + ' or ' + str(playercount) + ' points')
             ask = True
+            pygame.time.wait(3000)
             break
         elif dealercount > playercount: # check if dealer has more points than player
             print('Dealer wins with ' + str(dealer) + ' or ' + str(dealercount) + ' points')
             print('Player has:' + str(player) + ' or ' + str(playercount) + ' points')
             ask = True
+            pygame.time.wait(3000)
             break
         elif dealercount < playercount:  # checks if player has more points than dealer
             print('Player wins with ' + str(player) + ' or ' + str(playercount) + ' points')
             print('Dealer has:' + str(dealer) + ' or ' + str(dealercount) + ' points')
             ask = True
+            pygame.time.wait(3000)
             break
 
     game = input('Would you like to H: hit, or S: stand?\n')
@@ -114,10 +116,13 @@ while play_again == True:
         print(dealer[0])
         print('you have')
         print(player)
+        card_update(player, dealer)
+
     elif response == 's':
         dealer_Turn = True
+        card_update(player, dealer)
 
-    if ask == True: # this currently doesnt work. supposed to keep the game alive instead of restarting program every time
+    if ask is True:  #this currently doesnt work. supposed to keep the game alive instead of restarting program every time
         play_again_response = input('Would you like to play again? Y: yes, or N: no\n')
         lowercase_play_again_response = play_again_response.lower()
         if lowercase_play_again_response == 'y':

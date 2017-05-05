@@ -50,10 +50,6 @@ for dirpath, dirnames, filenames in os.walk(directory_path):  # this walks throu
             new_filepath = file_path.replace('', '')[:-4]
             card_image_name = new_filepath[len(directory_path):]  # should be 46
             card_dict.append(card_image_name)
-
-#print(card_dict)
-# 57
-print(len(directory_path))
 for card in card_dict:   # this will replace all numbers in string from the original name of the file with their spelling and add to a dictionary called replaced_card_dict
     #this is done because starting the name of something with a number will cause problems in python
     if card[0:2] == '10':
@@ -85,9 +81,7 @@ for card in card_dict:   # this will replace all numbers in string from the orig
         replaced_card_dict.append(new_card)
     else:
         replaced_card_dict.append(card)
-
 image_dict = dict(zip(replaced_card_dict, directory_dict))
-print(image_dict)
 def hand_to_image(hands): # this takes in a list of cards in playing form S4 and returns a string such as four_of_spades that can be read by other function
         card_box = []
         for hand in hands:
@@ -111,13 +105,13 @@ def hand_to_image(hands): # this takes in a list of cards in playing form S4 and
             elif hand[1] == 'T':
                 card_string = 'Ten_of_'
             elif hand[1] == 'J':
-                card_string = 'Jack_of_'
+                card_string = 'jack_of_'
             elif hand[1] == 'Q':
-                card_string = 'Queen_of_'
+                card_string = 'queen_of_'
             elif hand[1] == 'K':
-                card_string = 'King_of_'
+                card_string = 'king_of_'
             elif hand[1] == 'A':
-                card_string = 'Ace_of_'
+                card_string = 'ace_of_'
             if hand[0] == 'H':
                 card_string = card_string + 'hearts'
             if hand[0] == 'S':
@@ -133,16 +127,13 @@ def cards_display(x, y, what_card):
     # it then scales the image and uses pygame to display this image at a certain place
     display_card = pygame.transform.scale(pygame.image.load(image_dict[what_card]), size_of_card)
     gameDisplay.blit(display_card, (x, y))
-
 game = True
-
 def player_cards_display(x, y, what_card): # displays players cards at players position
     move = 0
     for hand in hand_to_image(what_card):
         cards_display(dealer_x+move, y, hand)
         move += card_width/3
         pygame.display.update()
-
 def dealer_cards_display(x, y, what_card): # displays dealers cards at dealers position
     move = 0
     for hand in hand_to_image(what_card):
@@ -150,18 +141,17 @@ def dealer_cards_display(x, y, what_card): # displays dealers cards at dealers p
         move += card_width/3
         pygame.display.update()
 
-def card_update(): # combines previous two functions
-    player_cards_display(player_x, player_y, player_hand)
-    dealer_cards_display(dealer_x, dealer_y, reversed(hands))
+
+def card_update(player_cards, dealer_cards):  # combines previous two functions
+    player_cards_display(player_x, player_y, player_cards)  # player_hand
+    dealer_cards_display(dealer_x, dealer_y, reversed(dealer_cards))  # hands
+    pygame.display.update()
 
 
-while True: # main game loop
+'''while True: # main game loop
 
     gameDisplay.fill(green)
     card_update()
     pygame.time.wait(10000)
     pygame.quit()
-    quit()
-
-
-
+    quit()'''
