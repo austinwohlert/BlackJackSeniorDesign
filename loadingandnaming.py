@@ -33,9 +33,14 @@ card_dict = []   # list of all cards with format 2_"card"
 replaced_card_dict = []   # list of all cards with number replaced by spelling two_"card"
 green = (0, 128, 0) # green color
 size_of_card = (card_width, card_height)  # size of the card x,y
-directory_path = '/Users/Austin/PycharmProjects/BlackJack/cards/'  # this is the path where cards are stored. WILL NEED TO BE CHANGED FOR PI
-hands = ['D2', 'S4', 'D5'] # this is just a test hand. will need to replace it in the while loop where it is for hand in hand_to_image(hands)
-player_hand = ['D3', 'S3', 'C4'] # test hand for the player
+directory_path = r'\Users\randy\PycharmProjects\BlackJackSeniorDesign\cards\\'
+# this is the path where cards are stored. WILL NEED TO BE CHANGED FOR PI''''
+# code will need to change because the amount of numbers stripped in the directory will vary depending on the size of the directory
+# Austin Mac directory path ----  '/Users/Austin/PycharmProjects/BlackJack/cards/'
+# Austin Windows directory path -- '\\Users\\randy\\PycharmProjects\\BlackJackSeniorDesign\\cards\\'
+hands = ['D2', 'S4',
+         'D5']  # this i just a test hand. will need to replace it in the while loop where it is for hand in hand_to_image(hands)
+player_hand = ['D2', 'S4', 'D5']  # test hand for the player
 for dirpath, dirnames, filenames in os.walk(directory_path):  # this walks through all card images and makes a dictionary with just the cards name from the file
     # takes the directory_path and each card's path and makes a dictionary of all of the names
     for filename in filenames:
@@ -43,12 +48,12 @@ for dirpath, dirnames, filenames in os.walk(directory_path):  # this walks throu
         if imghdr.what(file_path):
             directory_dict.append(file_path)
             new_filepath = file_path.replace('', '')[:-4]
-            card_image_name = new_filepath[46:]
+            card_image_name = new_filepath[len(directory_path):]  # should be 46
             card_dict.append(card_image_name)
 
 #print(card_dict)
-
-
+# 57
+print(len(directory_path))
 for card in card_dict:   # this will replace all numbers in string from the original name of the file with their spelling and add to a dictionary called replaced_card_dict
     #this is done because starting the name of something with a number will cause problems in python
     if card[0:2] == '10':
@@ -82,7 +87,7 @@ for card in card_dict:   # this will replace all numbers in string from the orig
         replaced_card_dict.append(card)
 
 image_dict = dict(zip(replaced_card_dict, directory_dict))
-
+print(image_dict)
 def hand_to_image(hands): # this takes in a list of cards in playing form S4 and returns a string such as four_of_spades that can be read by other function
         card_box = []
         for hand in hands:
