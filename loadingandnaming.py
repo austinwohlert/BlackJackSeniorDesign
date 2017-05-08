@@ -3,7 +3,7 @@ import imghdr
 import os
 
 '''
-saekljdsk
+
 Currently have a function that will go through all the picture files and strip out the card name from each file.
 I also have created an image dictionary that has the card paired with the location of the image
 
