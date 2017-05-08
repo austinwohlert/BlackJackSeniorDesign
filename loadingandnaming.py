@@ -3,7 +3,7 @@ import imghdr
 import os
 
 '''
-
+saekljdsk
 Currently have a function that will go through all the picture files and strip out the card name from each file.
 I also have created an image dictionary that has the card paired with the location of the image
 
@@ -33,7 +33,7 @@ card_dict = []   # list of all cards with format 2_"card"
 replaced_card_dict = []   # list of all cards with number replaced by spelling two_"card"
 green = (0, 128, 0) # green color
 size_of_card = (card_width, card_height)  # size of the card x,y
-directory_path = r'\Users\randy\PycharmProjects\BlackJackSeniorDesign\cards\\'
+directory_path = '/Users/Austin/PycharmProjects/BlackJack/cards/'
 # this is the path where cards are stored. WILL NEED TO BE CHANGED FOR PI''''
 # code will need to change because the amount of numbers stripped in the directory will vary depending on the size of the directory
 # Austin Mac directory path ----  '/Users/Austin/PycharmProjects/BlackJack/cards/'
@@ -53,7 +53,7 @@ for dirpath, dirnames, filenames in os.walk(directory_path):  # this walks throu
 
 #print(card_dict)
 # 57
-print(len(directory_path))
+
 for card in card_dict:   # this will replace all numbers in string from the original name of the file with their spelling and add to a dictionary called replaced_card_dict
     #this is done because starting the name of something with a number will cause problems in python
     if card[0:2] == '10':
@@ -87,7 +87,7 @@ for card in card_dict:   # this will replace all numbers in string from the orig
         replaced_card_dict.append(card)
 
 image_dict = dict(zip(replaced_card_dict, directory_dict))
-print(image_dict)
+
 def hand_to_image(hands): # this takes in a list of cards in playing form S4 and returns a string such as four_of_spades that can be read by other function
         card_box = []
         for hand in hands:
