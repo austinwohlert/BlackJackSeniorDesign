@@ -9,7 +9,6 @@
 from random import shuffle
 import pygame
 #import loadingandnaming
-import pygame
 import imghdr
 import os
 pygame.init()
@@ -130,4 +129,5 @@ while play_again == True:
             ask = False
             break
 
+# THis is awesome
 
