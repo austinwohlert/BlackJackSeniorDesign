@@ -33,11 +33,11 @@ card_dict = []   # list of all cards with format 2_"card"
 replaced_card_dict = []   # list of all cards with number replaced by spelling two_"card"
 green = (0, 128, 0) # green color
 size_of_card = (card_width, card_height)  # size of the card x,y
-directory_path = r'\Users\randy\PycharmProjects\BlackJackSeniorDesign\cards\\'
+directory_path = '/Users/Austin/PycharmProjects/BlackJack/cards/'
 # this is the path where cards are stored. WILL NEED TO BE CHANGED FOR PI''''
 # code will need to change because the amount of numbers stripped in the directory will vary depending on the size of the directory
 # Austin Mac directory path ----  '/Users/Austin/PycharmProjects/BlackJack/cards/'
-# Austin Windows directory path -- '\\Users\\randy\\PycharmProjects\\BlackJackSeniorDesign\\cards\\'
+# Austin Windows directory path -- r'\Users\randy\PycharmProjects\BlackJackSeniorDesign\cards\\'
 hands = ['D2', 'S4',
          'D5']  # this i just a test hand. will need to replace it in the while loop where it is for hand in hand_to_image(hands)
 player_hand = ['D2', 'S4', 'D5']  # test hand for the player

@@ -6,6 +6,7 @@
 # DONE will need a function for dealing cards
 # will need a function for finding the best move
 # possibly find a way to display info in a window and not textbox
+# BUG 2 ACES DOESNT ADD RIGHT
 from random import shuffle
 import imghdr
 import os
@@ -37,6 +38,7 @@ def points(mycards):
             ace_count += 1
     if ace_count == 1 and my_points <= 10:
         my_points += 11
+        ace_count -= 1
     elif ace_count != 0:
         my_points += 1
     return int(my_points)
@@ -136,3 +138,5 @@ while play_again is True:
             break
 
 
+
+pygame.time.wait(10000)
