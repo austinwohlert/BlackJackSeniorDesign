@@ -22,7 +22,7 @@ def deck():
     # deck joins the suits and ranks of a deck and then shuffles the deck into a random order
     deck = []
     for suit in ['H', 'S', 'C', 'D']:
-        for rank in ['A', 'J', 'Q', 'K', 'T', 'T', 'T', 'T', 'T', '7', '8', '9', 'T']:
+        for rank in ['A', 'J', 'Q', 'K', 'T', '9', '8', '7', '6', '5', '4', '3', '2']:
             deck.append(suit+rank)
     shuffle(deck)
     return deck
@@ -59,12 +59,15 @@ def pointsforaces(mycards):
             my_points += int(i[1])
         else:
             ace_count += 1
+
     if ace_count != 0:
         while ace_count != 0:
             my_points += 1
-            if my_points <= 11:
+
+            if my_points <= 11 and ace_count == 1:
                 my_points +=10
             ace_count -= 1
+
 
     return int(my_points)
 
@@ -118,7 +121,7 @@ def get_player_bet_amount():
             print('Please input a number')
 
     return bet_amount
-def check_for_spilt(hand,bet,money):
+def check_for_spilt(hand,bet,money,hands):
     ace = 0
     two = 0
     three = 0
@@ -150,21 +153,21 @@ def check_for_spilt(hand,bet,money):
                 eight += 1
             elif i[1] == '9':
                 nine += 1
-    if ace >= 2 or two >= 2 or three >= 2 or four >= 2 or five >= 2 or six >= 2 or seven >= 2 or eight >= 2 or nine >= 2 or ten >= 2:
-        if money >= bet:
+    if ace == 2 or two == 2 or three == 2 or four == 2 or five == 2 or six == 2 or seven == 2 or eight == 2 or nine == 2 or ten == 2:
+        if money >= bet and hands < 4:
             can_spilt = True
         else:
             can_spilt = False
     else:
         can_spilt = False
 
+
     return can_spilt
-def spilt(hand):
-    return hand[::2],hand[1::2]
+def spilt(poss_spilt,hand,hand_final,num_hands,num_spilts):
 
 
 
-
+    return hands
 mydeck = deck()
 turn_number = 0 # variable used to keep track of how many turns there have been
 play_again = True
@@ -176,7 +179,8 @@ while shuffle_again == True:
     dealer_Turn = False
     play_again = True
     ask = False
-    while  play_again == True:
+    while play_again == True:
+        while play_again == True:
 
 # betting phase before gameplay starts
             bet = get_player_bet_amount()
@@ -186,11 +190,25 @@ while shuffle_again == True:
 
             game = ''
             insurance = ''
-            player_hand = create_player_hand(mydeck)
-            player = player_hand[0]
-            dealer_hand = create_dealer_hand(mydeck)
-            dealer = dealer_hand[0]
+            #player_hand = create_player_hand(mydeck)
+            #player = player_hand[0]
+            #dealer_hand = create_dealer_hand(mydeck)
+            #dealer = dealer_hand[0]
+            number_of_splits = 0
             number_of_hands = 1
+            dealer = []
+            hands_values = []
+            hands = []
+            hands_final = []
+            doubles_flag = []
+            player = []
+            player.append(mydeck.pop())
+            dealer.append(mydeck.pop())
+            player.append(mydeck.pop())
+            dealer.append(mydeck.pop())
+            hands = [player]
+            dealer_draw_cards = False
+
             #
             #gameDisplay.fill(green)
             #card_update()
@@ -205,263 +223,344 @@ while shuffle_again == True:
             print(player,playercount)
 # check for spilt possibility
             possible_spilt = False
-            possible_spilt = check_for_spilt(player,bet,player_money_left)
+            possible_spilt = check_for_spilt(player,bet,player_money_left,number_of_hands)
 
 
 
             if dealercount == 21 and dealerTopcardCount == 0 and playercount != 21:
                 player_money -= bet
                 print('Dealer has non Ace showing 21')
+                ask = True
                 break
 # player gets blackjack and dealer is showing an ace
 
-            if playercount == 21 and dealerTopcardCount == 1: # checks for blackjack only if no turns have gone through
+            elif playercount == 21 and dealerTopcardCount == 1: # checks for blackjack only if no turns have gone through
                 even_money = input('Would you like even money? Y for Yes, N for No\n')
                 response = even_money.lower()
                 if response == 'y':
                     player_money += (bet)
+                    print('You took even money.')
+                    print('You now have $',player_money)
+                    print('Dealer had ' + str(dealer))
                     ask = True
                     break
                 if response == 'n' and dealercount == 21:
                     print('Dealer also has 21, its a push!')
+                    print('You now have $', player_money)
                     ask = True
                     break
                 if response == 'n' and dealercount != 21:
                     print('dealer does not have 21, you win!')
                     player_money += (bet*1.5)
+                    print('You now have $', player_money)
                     ask = True
                     break
-            if playercount == 21: # checks for blackjack only if no turns have gone through
+            elif playercount == 21: # checks for blackjack only if no turns have gone through
                 print('Blackjack! player Wins!')
                 player_money += (bet*1.5)
+                print('You now have $', player_money)
                 ask = True
                 break
 # dealer shows an ace
-            if dealerTopcardCount ==  1:
+            elif dealerTopcardCount ==  1:
                 insurance = input('Would you like to buy Insurance? Y for Yes, N for No\n')
                 response = insurance.lower()
                 if response == 'y' and dealercount == 21 and bet/2 > player_money_left:
                     print ('You cant afford insurance silly, and the Dealer has 21,you lose!\n')
                     player_money -= bet
+                    print('You now have $', player_money)
                     ask = True
                     break
-                if response == 'y' and dealercount != 21 and bet/2 > player_money_left:
+                elif response == 'y' and dealercount != 21 and bet/2 > player_money_left:
                     print ('You cant afford insurance silly!\n')
-                if response == 'y' and dealercount == 21 and bet/2 <= player_money_left:
+                elif response == 'y' and dealercount == 21 and bet/2 <= player_money_left:
                     print ('Dealer has 21, keep your money!\n')
+                    print('You now have $', player_money)
                     ask = True
                     break
-                if response == 'y' and dealercount != 21 and bet/2 <= player_money_left:
+                elif response == 'y' and dealercount != 21 and bet/2 <= player_money_left:
                     print('Dealer does not have 21, you lose your insurance money:',(bet/2),'\n')
                     player_money -= (bet/2)
-                if response != 'y' and dealercount == 21:
+                elif response != 'y' and dealercount == 21:
                     print('Dealer has 21, you lose\n')
                     player_money -= bet
+                    print('You now have $', player_money)
                     ask = True
                     break
-                if response != 'y' and dealercount != 21:
+                elif response != 'y' and dealercount != 21:
                     print('Dealer does not have 21, continue playing\n')
 
 # checks to see if spilt is an option
 
 
 
-# if there are no blackjacks or dealer 21s (regular game)
+# if there are no blackjacks or dealer 21s (regular game) Flaggggggggggggggggggggjgjgjgjgjgjgjgjgjgjjgjgjgjgjgjjgjgjgjgjgjggjjgjgjg
             hit_counter = 0
             while dealer_Turn == False:
+                hand_turn = True
+                dealer_Turn = False
+                for x in hands:
 
-                if possible_spilt == True:
-                    game = input('Would you like to H: hit,or D: double, or S: stand, or P: Split?\n')
-                    response = game.lower()
-                else:
-                    game = input('Would you like to H: hit,or D: double, or S: stand?\n')
-                    response = game.lower()
-# spilt
-                if response == 'p' and possible_spilt == True:
-                    number_of_hands += 1
-                    hand1,hand2 = spilt(player)
-                    dealer_Turn = True
+                    hand_turn = True
+                    hit_counter = 0
+                    did_spilt = False
 
-                elif response == 'p' and possible_spilt == False:
-                    print('You cant spilt those cards, or you dont have enough money!')
-# hit
-                elif response == 'h':
-                        player.append(mydeck.pop())
-                        hit_counter += 1
-                        playercount = pointsforaces(player)
-                        print('dealer has')
-                        print(dealer[0])
-                        print('you have')
-                        print(player,playercount)
+                    while hand_turn == True:
 
-                        if(playercount > 21):
-                            dealer_Turn = True
-# double
-                elif response == 'd':
-                    if player_money >= bet*2 and hit_counter == 0:
-                        bet = bet*2
-                        print('Your bet is now',bet)
-                        player.append(mydeck.pop())
-                        playercount = pointsforaces(player)
-                        print('dealer has')
-                        print(dealer[0])
-                        print('you have')
-                        print(player, playercount)
-                        dealer_Turn = True
-                    elif hit_counter > 0:
-                        print('You can only double on the first card!')
-                    else:
-                        print('You dont have enough money to double!')
 
-#stay
-                else:
-                    dealer_Turn = True
-# spilt situation SPECIAL
-            if number_of_hands == 2:
-#clearing things up and resetting them for Hand 1.
-                possible_spilt = False
-                next_Hand = False
-                hand1.append(mydeck.pop())
-                bet1 = bet
-                player_money_left = player_money - bet1
-                check_for_spilt(hand1,bet1,player_money_left)
-                hit_counter1 = 0
-                hand1count = pointsforaces(hand1)
-                print('Hand 1 is',hand1,hand1count)
 
-#play hand one
-                while next_Hand == False:
-                    if possible_spilt == True:
-                        game = input('Would you like to H: hit,or D: double, or S: stand, or P: Split?\n')
-                        response = game.lower()
-                    else:
-                        game = input('Would you like to H: hit,or D: double, or S: stand?\n')
-                        response = game.lower()
-    # spilt
-                    if response == 'p' and possible_spilt == True:
-                        number_of_hands += 1
-                        hand1,hand3 = spilt(hand1)
-
-                    elif response == 'p' and possible_spilt == False:
-                        print('You cant spilt those cards, or you dont have enough money!')
-    # hit
-                    elif response == 'h':
-                            hand1.append(mydeck.pop())
-                            hand1count = pointsforaces(hand1)
-                            hit_counter1 += 1
-                            print('you have')
-                            print(hand1,hand1count)
-
-                            if(hand1count > 21):
-                                print('You busted, now play next hand.')
-                                next_Hand = True
-    # double
-                    elif response == 'd':
-                        if player_money >= bet1*2 and hit_counter1 == 0:
-                            bet1 = bet1*2
-                            print('Your bet is now',bet1)
-                            hand1.append(mydeck.pop())
-                            hand1count = pointsforaces(hand1)
-                            print('You have')
-                            print(hand1, hand1count)
-                            next_Hand = True
-                        elif hit_counter > 0:
-                            print('You can only double on the first card!')
+                        possible_spilt = check_for_spilt(x, bet, player_money_left, number_of_hands)
+                        if number_of_hands > 1:
+                            print('You have', hands)
+                            print('The hand you are playing is: ',x)
+                            if len(hands_final) >= 1:
+                                if x == hands_final[0]:
+                                    print(x)
+                                    break
+                            if len(hands_final) == 2:
+                                if x == hands_final[1]:
+                                    print(x)
+                                    break
+                        if possible_spilt == True:
+                            game = input('Would you like to H: hit,or D: double, or S: stand, or P: Split?\n')
+                            response = game.lower()
                         else:
-                            print('You dont have enough money to double!')
+                            game = input('Would you like to H: hit,or D: double, or S: stand?\n')
+                            response = game.lower()
+        # spilt
+                        if response == 'p' and possible_spilt == True:
+                            number_of_hands += 1
+                            number_of_splits += 1
+                            dealer_Turn = False
+                            if number_of_splits == 1:
+                                hands = x[::2],x[1::2]
+                                player_money_left -= bet
+                                did_spilt = True
+                                break
+                            if number_of_splits == 2 and len(hands_final) == 1:
+                                hands = hands_final[0],x[::2],x[1::2]
+                                player_money_left -= bet
+                                did_spilt = True
+                                break
+                            if number_of_splits == 2:
+                                hands_temp = hands[1]
+                                hands = x[::2],x[1::2],hands_temp
+                                player_money_left -= bet
+                                did_spilt = True
+                                break
+                            if number_of_splits == 3 and len(hands_final)==0:
+                                hands_temp1 = hands[1]
+                                hands_temp2 = hands[2]
+                                hands = x[::2],x[1::2],hands_temp1,hands_temp2
+                                player_money_left -= bet
+                                did_spilt = True
+                                break
+                            if number_of_splits == 3 and len(hands_final)==1:
+                                hands_temp = hands[2]
+                                hands = hands_final[0],x[::2],x[1::2],hands_temp
+                                player_money_left -= bet
+                                did_spilt = True
+                                break
+                            if number_of_splits == 3 and len(hands_final)==2:
+                                hands = hands_final[0],hands_final[1],x[::2],x[1::2]
+                                player_money_left -= bet
+                                did_spilt = True
+                                break
 
-    #stay
-                    else:
-                        next_Hand = True
+
+                        elif response == 'p' and possible_spilt == False:
+                            if number_of_hands < 4:
+                                print('You cant spilt those cards, or you dont have enough money!')
+                            else:
+                                print('You arent allowed to split more than 3 times')
+        # hit
+                        elif response == 'h':
+                                x.append(mydeck.pop())
+                                hit_counter += 1
+                                playercount = pointsforaces(x)
+                                print('dealer has')
+                                print(dealer[0])
+                                print('you have')
+                                print(x,playercount)
+
+                                if(playercount==21):
+                                    hand_turn = False
+                                    dealer_Turn = True
+                                    hands_final.append(x)
+                                    doubles_flag.append(1)
+                                    print('Nice Hit!')
+
+                                elif(playercount > 21 and number_of_splits >= 1):
+                                    hand_turn = False
+                                    dealer_Turn = True
+                                    hands_final.append(x)
+                                    doubles_flag.append(1)
+                                    print('You busted that hand.')
+                                elif(playercount > 21):
+                                    hand_turn = False
+                                    dealer_Turn = True
+                                    hands_final.append(x)
+                                    doubles_flag.append(1)
+                                    print('You busted!')
 
 
-#play Hand 2
-                print('Hand 1: ',hand1, hand1count,'\nHand 2: ',hand2)
-                break
 
+        # double
+                        elif response == 'd':
+                            if player_money >= bet*2 and len(x) == 2:
+                                    doubles_flag.append(2)
+                                    bet = bet
+                                    player_money_left -= bet
+                                    print('Your bet is now',2*bet)
+                                    x.append(mydeck.pop())
+                                    playercount = pointsforaces(x)
+                                    print('dealer has')
+                                    print(dealer[0])
+                                    print('you have')
+                                    print(x, playercount)
+                                    hands_final.append(x)
+                                    hand_turn = False
+                                    dealer_Turn = True
+
+                            elif hit_counter > 0 or len(x) !=2:
+                                print('You can only double on the first card!')
+                            else:
+                                print('You dont have enough money to double!')
+
+        #stay
+                        else:
+                            hands_final.append(x)
+                            doubles_flag.append(1)
+                            hand_turn = False
+                            dealer_Turn = True
+
+
+
+                    hand_turn = False
+                    if did_spilt == True:
+                        break
+
+
+            dealer_Turn = False
 # checks if player busts
-            if playercount > 21:
-                    print('player busts with:' + str(playercount) + ' points. Dealer wins')
-                    print('Dealer had ' + str(dealer))
-                    player_money -= bet
-                    ask = True
+            if number_of_hands > 1:
+                print(hands_final)
+            for y in hands_final:
+                if pointsforaces(y) <= 21:
+                    dealer_draw_cards = True
                     break
-# if the dealer has less than 16 and the player hasnt busted the dealer will hit until he gets 17 or busts
-            while dealercount <= 16:
-                dealer.append(mydeck.pop())
-                dealercount = pointsforaces(dealer)
-            if dealercount > 21: # check if dealer busts
-                    print('dealer busts with ' + str(dealer) + ' or ' + str(dealercount) + ' points.')
-                    print('Player wins with ' + str(player) + ' or ' + str(playercount) + ' points')
-                    player_money += bet
-                    ask = True
-                    break
-            if dealercount > playercount: # check if dealer has more points than player
-                    print('Dealer wins with ' + str(dealer) + ' or ' + str(dealercount) + ' points')
-                    print('Player has:' + str(player) + ' or ' + str(playercount) + ' points')
-                    player_money -= bet
-                    ask = True
-                    break
-            if dealercount < playercount:  # checks if player has more points than dealer
-                    print('Player wins with ' + str(player) + ' or ' + str(playercount) + ' points')
-                    print('Dealer has:' + str(dealer) + ' or ' + str(dealercount) + ' points')
-                    player_money += bet
-                    ask = True
-                    break
-            if dealercount == playercount:  # checks if there is a tie
-                    print('Its a push with ' + str(player) + ' or ' + str(playercount) + ' points')
-                    print('Dealer had:' + str(dealer) + ' or ' + str(dealercount) + ' points')
-                    ask = True
-                    break
-    print('You now have $' + str(player_money))
-    player_money_left = player_money
-# keeps the game alive instead of restarting program every time\
-    if ask == True and len(mydeck) > 9:
-            play_again_response = input('Would you like to play again? Y: yes, or N: no\n')
-            lowercase_play_again_response = play_again_response.lower()
-            if lowercase_play_again_response == 'y' and player_money >=1:
-                play_again = True
-            elif lowercase_play_again_response == 'y' and player_money < 1:
-                buy_back_response = input('You are out of money! Would you like to buy back in? Y: yes, or N: no\n')
-                lowercase_buy_back_response = buy_back_response.lower()
-                if buy_back_response == 'y':
-                    player_money = 100.0
-                    play_again = True
                 else:
-                    play_again = False
-                    shuffle_again = False
-                    ask = False
-            elif lowercase_play_again_response != 'y':
-                print('Thanks for playing!')
-                play_again = False
-                shuffle_again = False
-                ask = False
-# when deck gets to low to play another hand it will ask to reshuffle
-    elif ask == True and len(mydeck) <= 9:
-        if player_money >= 1:
-            shuffle_again_response = input('Would you like to reshuffle and play again? Y: yes, or N: no\n')
-            lowercase_shuffle_again_response = shuffle_again_response.lower()
-            if lowercase_shuffle_again_response == 'y':
-                shuffle_again = True
-                mydeck = deck()
+                    dealer_draw_cards = False
+# if the dealer has less than 16 and the player hasnt busted the dealer will hit until he gets 17 or busts
+            if dealer_draw_cards == True:
+                    while dealercount <= 16:
+                        dealer.append(mydeck.pop())
+                        dealercount = pointsforaces(dealer)
+            for z in hands_final:
+                reset_bet = False
 
-            elif lowercase_shuffle_again_response != 'y':
-                print('Thanks for playing!')
-                shuffle_again = False
-                ask = False
+                playercounts = pointsforaces(z)
+                if z == hands_final[0]:
+                    bet = bet*doubles_flag[0]
+                    if doubles_flag[0] == 2:
+                        reset_bet = True
+                elif z == hands_final[1]:
+                    bet = bet*doubles_flag[1]
+                    if doubles_flag[1] == 2:
+                        reset_bet = True
+                elif z == hands_final[2]:
+                    bet = bet*doubles_flag[2]
+                    if doubles_flag[2] == 2:
+                        reset_bet = True
+                elif z == hands_final[3]:
+                    bet = bet*doubles_flag[3]
+                    if doubles_flag[3] == 2:
+                        reset_bet = True
+
+                if playercounts > 21:
+                        print('player busts with:' + str(playercounts) + ' points. Dealer wins')
+                        print('Dealer had ' + str(dealer))
+                        player_money -= bet
+                        ask = True
+
+                elif dealercount > 21: # check if dealer busts
+                        print('dealer busts with ' + str(dealer) + ' or ' + str(dealercount) + ' points.')
+                        print('Player wins with ' + str(z) + ' or ' + str(playercounts) + ' points')
+                        player_money += bet
+                        ask = True
+
+                elif dealercount > playercounts: # check if dealer has more points than player
+                        print('Dealer wins with ' + str(dealer) + ' or ' + str(dealercount) + ' points')
+                        print('Player has:' + str(z) + ' or ' + str(playercounts) + ' points')
+                        player_money -= bet
+                        ask = True
+
+                elif dealercount < playercounts:  # checks if player has more points than dealer
+                        print('Player wins with ' + str(z) + ' or ' + str(playercounts) + ' points')
+                        print('Dealer has:' + str(dealer) + ' or ' + str(dealercount) + ' points')
+                        player_money += bet
+                        ask = True
+
+                elif dealercount == playercounts:  # checks if there is a tie
+                        print('Its a push with ' + str(z) + ' or ' + str(playercounts) + ' points')
+                        print('Dealer had:' + str(dealer) + ' or ' + str(dealercount) + ' points')
+                        ask = True
+                else:
+                    ask = True
+                if reset_bet == True:
+                    bet = bet/2
+
+                print('You now have $' + str(player_money))
+                player_money_left = player_money
+            break
+
+        # keeps the game alive instead of restarting program every time\
+        if ask == True and len(mydeck) > 9:
+                    play_again_response = input('Would you like to play again? Y: yes, or N: no\n')
+                    lowercase_play_again_response = play_again_response.lower()
+                    if lowercase_play_again_response == 'y' and player_money >=1:
+                        play_again = True
+                    elif lowercase_play_again_response == 'y' and player_money < 1:
+                        buy_back_response = input('You are out of money! Would you like to buy back in? Y: yes, or N: no\n')
+                        lowercase_buy_back_response = buy_back_response.lower()
+                        if buy_back_response == 'y':
+                            player_money = 100.0
+                            play_again = True
+                        else:
+                            play_again = False
+                            shuffle_again = False
+                            ask = False
+                    elif lowercase_play_again_response != 'y':
+                        print('Thanks for playing!')
+                        play_again = False
+                        shuffle_again = False
+                        ask = False
+        # when deck gets to low to play another hand it will ask to reshuffle
+        elif ask == True and len(mydeck) <= 9:
+                if player_money >= 1:
+                    shuffle_again_response = input('Would you like to reshuffle and play again? Y: yes, or N: no\n')
+                    lowercase_shuffle_again_response = shuffle_again_response.lower()
+                    if lowercase_shuffle_again_response == 'y':
+                        shuffle_again = True
+                        mydeck = deck()
+
+                    elif lowercase_shuffle_again_response != 'y':
+                        print('Thanks for playing!')
+                        shuffle_again = False
+                        ask = False
         else:
-            shuffle_again_response = input('Would you like to reshuffle, buy back in, and play again? Y: yes, or N: no\n')
-            lowercase_shuffle_again_response = shuffle_again_response.lower()
-            if lowercase_shuffle_again_response == 'y':
-                shuffle_again = True
-                mydeck = deck()
-                player_money = 100.0
-            elif lowercase_shuffle_again_response != 'y':
-                print('Thanks for playing!')
-                shuffle_again = False
-                ask = False
+                    shuffle_again_response = input('Would you like to reshuffle, buy back in, and play again? Y: yes, or N: no\n')
+                    lowercase_shuffle_again_response = shuffle_again_response.lower()
+                    if lowercase_shuffle_again_response == 'y':
+                        shuffle_again = True
+                        mydeck = deck()
+                        player_money = 100.0
+                    elif lowercase_shuffle_again_response != 'y':
+                        print('Thanks for playing!')
+                        shuffle_again = False
+                        ask = False
 
 
 
-    # This is awesome
+            # This is awesome
 
