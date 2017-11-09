@@ -149,7 +149,11 @@ def dealer_cards_display(x, y, what_card): # displays dealers cards at dealers p
         cards_display(dealer_x+move,y, hand)
         move += card_width/3
         pygame.display.update()
-
+def dealer_cards_display_one_card(x, y, what_card): # displays dealers cards at dealers position
+    move = 0
+    cards_display(dealer_x+move,y, hand_to_image(what_card[0]))
+    move += card_width/3
+    pygame.display.update()
 def card_update(): # combines previous two functions
     player_cards_display(player_x, player_y, player_hand)
     dealer_cards_display(dealer_x, dealer_y, reversed(hands))
